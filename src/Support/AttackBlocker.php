@@ -110,7 +110,7 @@ class AttackBlocker
     protected function checkExpiration()
     {
         $this->getEnabledItems()->each(function ($index, $type) {
-            if (($this->now()->diffInSeconds($this->record[$type]['lastRequestAt'])) <= ($this->getMaxSecondsForType($type))) {
+            if ($this->now()->diffInSeconds($this->record[$type]['lastRequestAt'], true) <= ($this->getMaxSecondsForType($type))) {
                 return $this->record;
             }
 
@@ -348,7 +348,9 @@ class AttackBlocker
      */
     private function now()
     {
-        Carbon::setTestNow();
+        if(app()->runningUnitTests()){
+            Carbon::setTestNow();
+        }
 
         return Carbon::now();
     }
